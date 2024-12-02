@@ -8,6 +8,10 @@ class User (AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    token_balance = models.IntegerField(default=0)
+    integrations = models.JSONField(default=list)
+    # plan = models.CharField(max_length=50)  # e.g., "free", "premium"
+    created_at = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -35,11 +39,3 @@ class UserManagerRelationship(models.Model):
 
     def __str__(self):
         return f"{self.manager.user.email} manages {self.user.email}"
-
-
-class InfoUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    token_balance = models.IntegerField(default=0)
-    integrations = models.JSONField(default=list)
-    # plan = models.CharField(max_length=50)  # e.g., "free", "premium"
-    created_at = models.DateTimeField(auto_now_add=True)
