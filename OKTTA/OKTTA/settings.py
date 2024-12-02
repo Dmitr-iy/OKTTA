@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'chat_app',
     'integrations_app',
     'settings_app',
+    'chatGPT_app',
 
     'rest_framework',
     'django_filters',
