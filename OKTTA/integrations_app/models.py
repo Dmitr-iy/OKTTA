@@ -17,7 +17,7 @@ class Integration(models.Model):
     api_key = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='integrations')
+    # user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='integrations')
 
     def __str__(self):
         return f"{self.user.email} - {self.name}"
