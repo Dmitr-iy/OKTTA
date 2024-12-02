@@ -164,8 +164,8 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'DARIEDU API',
-    'DESCRIPTION': 'This is a dariedu official API documentation',
+    'TITLE': 'OKTTA API',
+    'DESCRIPTION': 'This is a OKTTA official API documentation',
     'VERSION': '1.0.0',
     'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
     'SERVE_INCLUDE_SCHEMA': False,
