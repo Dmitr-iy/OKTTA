@@ -18,4 +18,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+COPY init_db.sh /docker-entrypoint-initdb.d/
+RUN chmod +x /docker-entrypoint-initdb.d/init_db.sh
+
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
