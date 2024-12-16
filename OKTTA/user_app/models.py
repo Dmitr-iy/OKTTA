@@ -5,13 +5,15 @@ from user_app.managers import UserManager
 
 
 class User (AbstractBaseUser, PermissionsMixin):
+    first_name = models.CharField(max_length=255, verbose_name='Имя', null=True, blank=True)
+    last_name = models.CharField(max_length=255, verbose_name='Отчество', null=True, blank=True)
+    family_name = models.CharField(max_length=255, verbose_name='Фамилия', null=True, blank=True)
     email = models.EmailField(unique=True)
-    is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    token_balance = models.IntegerField(default=0)
-    integrations = models.JSONField(default=list)
-    # plan = models.CharField(max_length=50)  # e.g., "free", "premium"
     created_at = models.DateTimeField(auto_now_add=True)
+    phone_number = models.CharField(max_length=20, null=True, blank=True)
+    name_company = models.CharField(max_length=255, null=True, blank=True)
+    website_link = models.URLField(null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -23,19 +25,9 @@ class User (AbstractBaseUser, PermissionsMixin):
 
 
 class Manager(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return f"Manager {self.user.email}"
-
-
-class UserManagerRelationship(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='managers')
-    manager = models.ForeignKey(Manager, on_delete=models.CASCADE, related_name='managed_users')
-
-    class Meta:
-        unique_together = ('user', 'manager')
+    email = models.EmailField(unique=True, default='default@example.com')
+    is_active = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.manager.user.email} manages {self.user.email}"
+        return f"Manager {self.email}"

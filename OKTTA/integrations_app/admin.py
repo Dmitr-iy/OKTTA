@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from integrations_app.models import Integration
+
+@admin.register(Integration)
+class ManagementAdmin(admin.ModelAdmin):
+    pass
