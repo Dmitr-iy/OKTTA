@@ -5,35 +5,20 @@ from user_app.models import Manager, User
 
 
 class Chat(models.Model):
-    title = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    # title = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     integration = models.ForeignKey(Integration, null=True, blank=True, on_delete=models.SET_NULL, related_name='chats')
+    manager = models.ForeignKey(Manager, null=True, blank=True, on_delete=models.SET_NULL, related_name='chats')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='chats')
 
     def __str__(self):
-        return self.title
+        return self.name
 
-
-class ManagerChat(models.Model):
-    manager = models.ForeignKey(Manager, on_delete=models.CASCADE, related_name='manager_chats')
-    chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name='manager_chats')
-
-    class Meta:
-        unique_together = ('manager', 'chat')
-
-    def __str__(self):
-        return f"{self.manager.user.email} in chat {self.chat.title}"
-
-
-class UserChat(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_chats')
-    chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name='user_chats')
-
-    class Meta:
-        unique_together = ('user', 'chat')
-
-    def __str__(self):
-        return f"{self.user.email} in chat {self.chat.title}"
+    def create_chat(self):
+        chat = Chat.objects.create(name=self.name, integration=self.integration, user=self.user)
+        return chat
 
 
 class Sender(models.Model):
