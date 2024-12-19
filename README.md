@@ -34,7 +34,7 @@ docker-compose up --build
 
 Для создания админа (суперпользователя), для доступа в админ панель, при запущенном докере в соседнем терминале из директории OKTTA/OKTTA:
 ```
-docker-compose exec -ti okkta-server python manage.py createsuperuser
+docker-compose exec -ti oktta-server python manage.py createsuperuser
 ```
 Вводить email, пароль дважды (при введении пароль не отображается), если говорит, что пароль слишком простой/короткий, пишете Y, готово.
 __________________________________________
