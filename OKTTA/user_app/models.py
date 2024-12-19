@@ -1,6 +1,9 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
+from django.utils import timezone
+from datetime import timedelta
 
+from tariff_app.models import Plan
 from user_app.managers import UserManager
 
 
@@ -14,6 +17,10 @@ class User (AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     name_company = models.CharField(max_length=255, null=True, blank=True)
     website_link = models.URLField(null=True, blank=True)
+    plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True)
+    tokens_purchased = models.PositiveIntegerField(default=0)
+    plan_start_date = models.DateTimeField(null=True, blank=True)
+    plan_end_date = models.DateTimeField(null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -22,6 +29,16 @@ class User (AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+    @property
+    def is_plan_active(self):
+        if self.plan_end_date and timezone.now() < self.plan_end_date:
+            return True
+        return False
+
+    # @property
+    # def total_tokens(self):
+    #     return self.plan.tokens + self.tokens_purchased  # Общее количество токенов
 
 
 class Manager(models.Model):
