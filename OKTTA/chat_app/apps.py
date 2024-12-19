@@ -7,3 +7,6 @@ class ChatAppConfig(AppConfig):
 
     def ready(self):
         import chat_app.schema
+
+        from .scheduler import start_scheduler
+        start_scheduler()
