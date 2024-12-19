@@ -40,6 +40,7 @@ def webhook(request, id_integration):
         chat, created = Chat.objects.get_or_create(
             integration=integration,
             user=user,
+            messanger_chat_id=chat_id,
             defaults={'name': integration.name}
         )
         if created:
@@ -63,14 +64,6 @@ def webhook(request, id_integration):
             response_text = respond_to_gpt(message_text, chat)
             if response_text:
                 send_message(chat_id, response_text, api_key)
-
-            response_user = respond_to_user(chat, user)
-            if response_user:
-                send_message(chat_id, response_user, api_key)
-
-            response_manager = respond_to_manager(chat, user)
-            if response_manager:
-                send_message(chat_id, response_manager, api_key)
 
             return JsonResponse({'status': 'ok'})
 
@@ -101,49 +94,6 @@ def respond_to_gpt(response_text, chat):
 
     return None
 
-
-def respond_to_user(chat, user):
-    if user:
-        response_text = f'Я ваш админ: {user.first_name} {user.last_name}'
-
-        Message.objects.create(
-            nickname=user.email,
-            chat=chat,
-            sender_type=user.email,
-            messages=response_text
-        )
-        logger.info(f'Response message created: {response_text} by user: {user.email}')
-
-        return response_text
-
-    return None
-
-
-def respond_to_manager(chat, user):
-    if not user:
-        logger.warning('No user found to respond to manager.')
-        return
-
-    manager = Manager.objects.filter(user=user).first()
-
-    if not manager:
-        logger.warning('No manager found for user.')
-        return
-
-    if manager:
-        message_text = f'Я ваш менеджер: {manager.email}'
-
-        Message.objects.create(
-            nickname=manager.email,
-            chat=chat,
-            sender_type=manager.email,
-            messages=message_text
-        )
-        logger.info(f'Response message created: {message_text} by manager: {manager.email}')
-
-        return message_text
-
-    return None
 
 def send_message(chat_id, text, api_key):
     url = f'{settings.TELEGRAM_URL}{api_key}/sendMessage'
