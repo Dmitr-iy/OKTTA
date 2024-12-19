@@ -38,6 +38,13 @@ services:
       start_period: 10s
       timeout: 10s
 
+  redis:
+    image: redis:alpine
+    #    ports:
+    #      - "6379:6379"
+    networks:
+      - mynetwork
+
 volumes:
   pg_data:
     driver: local
