@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 import logging
+from django.core.cache import cache
 
 from chat_app.models import Chat, Message
 from chat_app.serializers import ChatSerializer, MessageSerializer
@@ -40,10 +41,14 @@ class ChatViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
         chat_statistics = []
 
         for chat in chats:
+            message_count = cache.get(f'message_count_{chat.id}')
+            if message_count is None:
+                message_count = chat.message_count()
+                cache.set(f'message_count_{chat.id}', message_count, timeout=60)
             chat_data = {
                 'id': chat.id,
                 'name': chat.name,
-                'message_count': chat.message_count(),
+                'message_count': message_count,
             }
             chat_statistics.append(chat_data)
 

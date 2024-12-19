@@ -8,3 +8,6 @@ class UserAppConfig(AppConfig):
     def ready(self):
         import user_app.schema
         import user_app.signals
+
+        from .scheduler import start_scheduler
+        start_scheduler()

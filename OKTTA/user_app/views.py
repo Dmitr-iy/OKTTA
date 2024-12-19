@@ -10,6 +10,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import viewsets, mixins
+from django.core.cache import cache
 
 from common.permissions import IsUserNotManager
 from integrations_app.models import Integration
@@ -101,8 +102,10 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.Gen
             return Response({"error": "You do not have permission to access this user's statistics."}, status=403)
 
         user_data = self.serializer_class(user).data
-        chat_message_count = user.chat_message_count()
-        chat_count = user.chat_count()
+        chat_message_count = cache.get(f'chat_message_count_{user.id}')
+        print(chat_message_count)
+        chat_count = cache.get(f'chat_count_{user.id}')
+        print('chat_count', chat_count)
 
         response_data = {
             'user_data': user_data,
