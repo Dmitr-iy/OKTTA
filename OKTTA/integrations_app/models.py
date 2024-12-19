@@ -12,7 +12,7 @@ class Integration(models.Model):
     )
 
     id_integration = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=255, choices=CHOICES)
+    name = models.CharField(max_length=255, choices=CHOICES, unique=True)
     api_key = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)

@@ -74,7 +74,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'first_name', 'last_name', 'family_name', 'phone_number', 'name_company',
-                  'website_link']
+                  'website_link', 'plan', 'tokens_purchased']
 
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email', instance.email)
