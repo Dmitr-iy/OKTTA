@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from chatGPT_app.models import ChatGPT
+
+
+@admin.register(ChatGPT)
+class ChatGPTAdmin(admin.ModelAdmin):
+    pass

@@ -31,9 +31,11 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['*']
 
 BASE_URL = os.getenv('BASE_URL')
+TELEGRAM_URL = os.getenv('TELEGRAM_URL')
+WEBHOOK_URL = os.getenv('WEBHOOK_URL')
 
 
 # Application definition

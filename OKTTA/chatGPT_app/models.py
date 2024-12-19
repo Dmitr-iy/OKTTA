@@ -7,7 +7,7 @@ class ChatGPT(models.Model):
         ('services', 'Services'),
         ('regulations', 'Regulations'),
     )
-
+    name = models.CharField(max_length=255, default='gpt')
     title = models.CharField(max_length=255, choices=CHOICES)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -15,4 +15,4 @@ class ChatGPT(models.Model):
     user = models.ForeignKey('user_app.User', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.title
+        return self.name

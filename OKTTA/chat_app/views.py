@@ -1,9 +1,12 @@
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+import logging
 
 from chat_app.models import Chat
 from chat_app.serializers import ChatSerializer
+
+logger = logging.getLogger(__name__)
 
 
 class ChatViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
