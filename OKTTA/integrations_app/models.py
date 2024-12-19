@@ -19,4 +19,4 @@ class Integration(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='integrations', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.user} - {self.name} (ID: {self.id_integration})"
+        return f"{self.id_integration}"

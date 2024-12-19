@@ -4,6 +4,8 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 from rest_framework import routers
 
 from rest_framework_simplejwt.views import TokenBlacklistView, TokenRefreshView
+
+from chat_app.webhook import webhook
 from user_app.views import RegistrationView, CustomTokenObtainPairView, confirm_email
 from integrations_app.urls import router as integrations_approuter
 from user_app.urls import router as users_approuter
@@ -25,6 +27,8 @@ urlpatterns = [
     path('api/token/blacklist/', TokenBlacklistView.as_view(), name='token_blacklist'),
 
     path('api/settings/', WidgetView.as_view()),
+
+    path('webhook/<id_integration>/', webhook, name='webhook'),
 
     path('confirm/<str:token>/', confirm_email, name='confirm_email'),
 
