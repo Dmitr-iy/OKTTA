@@ -64,8 +64,7 @@ class ManagerSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        # Устанавливаем пользователя, который создает менеджера
-        user = self.context['request'].user  # Получаем текущего пользователя
+        user = self.context['request'].user
         return Manager.objects.create(user=user, **validated_data)
 
 

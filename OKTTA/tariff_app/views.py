@@ -23,7 +23,7 @@ class PlansViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.Ge
     permission_classes = [IsAuthenticated]
 
 @extend_schema(
-    tags=['users-plans'],
+    tags=['plans'],
     summary='приобретение тарифного плана',
     responses={200: PlanSerializer(many=True)},
 )

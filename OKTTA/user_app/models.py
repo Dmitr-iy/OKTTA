@@ -1,9 +1,8 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
-from datetime import timedelta
 
-from tariff_app.models import Plan
+from chat_app.models import Message
 from user_app.managers import UserManager
 
 
@@ -17,7 +16,7 @@ class User (AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     name_company = models.CharField(max_length=255, null=True, blank=True)
     website_link = models.URLField(null=True, blank=True)
-    plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True)
+    plan = models.ForeignKey('tariff_app.plan', on_delete=models.SET_NULL, null=True)
     tokens_purchased = models.PositiveIntegerField(default=0)
     plan_start_date = models.DateTimeField(null=True, blank=True)
     plan_end_date = models.DateTimeField(null=True, blank=True)
@@ -39,6 +38,12 @@ class User (AbstractBaseUser, PermissionsMixin):
     # @property
     # def total_tokens(self):
     #     return self.plan.tokens + self.tokens_purchased  # Общее количество токенов
+
+    def chat_message_count(self):
+        return Message.objects.filter(chat__user=self).count()
+
+    def chat_count(self):
+        return self.chats.count()
 
 
 class Manager(models.Model):

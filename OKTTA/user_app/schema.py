@@ -80,6 +80,14 @@ class Fix1(OpenApiViewExtension):
             def my_integrations(self, request, *args, **kwargs):
                 return super().my_integrations(request, *args, **kwargs)
 
+            @extend_schema(
+                summary='Статистика сообщений и количества чатов пользователя',
+                description='Статистика сообщений и количества чатов пользователя',
+                tags=['statistics'],
+            )
+            def statistics(self, request, *args, **kwargs):
+                return super().statistics(request, *args, **kwargs)
+
         return Fixed
 
 

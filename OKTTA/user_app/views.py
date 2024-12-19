@@ -90,6 +90,27 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.Gen
         serializer = ManagerSerializer(filtered_managers, many=True)
         return Response(serializer.data)
 
+    @action(detail=True, methods=['get'], url_name='statistics_user')
+    def statistics(self, request, pk=None):
+        try:
+            user = User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            return Response({"error": "User  not found."}, status=404)
+
+        if request.user != user and not request.user.is_staff:
+            return Response({"error": "You do not have permission to access this user's statistics."}, status=403)
+
+        user_data = self.serializer_class(user).data
+        chat_message_count = user.chat_message_count()
+        chat_count = user.chat_count()
+
+        response_data = {
+            'user_data': user_data,
+            'chat_message_count': chat_message_count,
+            'chat_count': chat_count
+        }
+        return Response(response_data)
+
 
 class ManagerViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
                      viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin):

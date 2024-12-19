@@ -31,6 +31,24 @@ class ChatViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
         serializer = ChatSerializer(chats, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['get'], url_name='statistics')
+    def statistics(self, request):
+        """
+        Эндпоинт для получения статистики чатов.
+        """
+        chats = self.get_queryset()
+        chat_statistics = []
+
+        for chat in chats:
+            chat_data = {
+                'id': chat.id,
+                'name': chat.name,
+                'message_count': chat.message_count(),
+            }
+            chat_statistics.append(chat_data)
+
+        return Response(chat_statistics, status=status.HTTP_200_OK)
+
 
 class MessageViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin,
                      viewsets.GenericViewSet):

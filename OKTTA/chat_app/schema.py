@@ -33,6 +33,14 @@ class Fix1(OpenApiViewExtension):
             def my_chats(self, request, *args, **kwargs):
                 return super().my_chats(request, *args, **kwargs)
 
+            @extend_schema(
+                summary='Статистика чатов',
+                description='Получение статистики чатов',
+                tags=['statistics'],
+            )
+            def statistics(self, request, *args, **kwargs):
+                return super().statistics(request, *args, **kwargs)
+
         return Fixed
 
 
