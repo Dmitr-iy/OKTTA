@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'chat_app.apps.ChatAppConfig',
     'integrations_app.apps.IntegrationsAppConfig',
     'settings_app',
-    'chatGPT_app',
+    'chatGPT_app.apps.ChatgptAppConfig',
     'tariff_app',
 
     'rest_framework',
