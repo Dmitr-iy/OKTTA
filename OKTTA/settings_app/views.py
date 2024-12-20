@@ -1,12 +1,15 @@
 from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from common.permissions import IsUserNotManager
 from .models import Widget
 from .serializers import WidgetSerializer
 
 class WidgetView(APIView):
     serializer_class = WidgetSerializer
+    permission_classes = [IsAuthenticated | IsUserNotManager]
 
     @extend_schema(
         summary='Получение виджет кода',

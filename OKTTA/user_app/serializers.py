@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
+import re
 
 from user_app.models import Manager
 
@@ -22,6 +24,23 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+    def validate(self, value):
+        if len(value) < 8 or len(value) > 64:
+            raise serializers.ValidationError("Пароль должен содержать от 8 до 64 символов.")
+
+        if not re.search(r'[a-zA-Zа-яА-Я]', value):
+            raise serializers.ValidationError(
+                "Пароль должен содержать хотя бы одну букву (латинскую или кириллическую).")
+
+        if not re.search(r'\d', value):
+            raise serializers.ValidationError("Пароль должен содержать хотя бы одну цифру.")
+
+        special_characters = r'[.!#$%&\'*+\/=?^_`{|}~ ]'
+        if not re.search(special_characters, value):
+            raise serializers.ValidationError(
+                "Пароль должен содержать хотя бы один специальный символ: .!#$%&'*+/=?^_`{|}~ ")
+        return value
 
 
 class MyTokenObtainPairSerializer(serializers.Serializer):
@@ -75,6 +94,12 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'email', 'first_name', 'last_name', 'family_name', 'phone_number', 'name_company',
                   'website_link', 'plan', 'tokens_purchased']
 
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'plan': {'read_only': True},
+            'tokens_purchased': {'read_only': True},
+        }
+
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email', instance.email)
         instance.first_name = validated_data.get('first_name', instance.first_name)
@@ -85,3 +110,19 @@ class UserSerializer(serializers.ModelSerializer):
         instance.website_link = validated_data.get('website_link', instance.website_link)
         instance.save()
         return instance
+
+    def validate(self, value):
+        print(f"Received phone number for validation: {value}")
+
+        if value.startswith('+7'):
+            value = value.replace('+7', '8', 1)
+        elif value.startswith('7'):
+            value = value.replace('7', '8', 1)
+
+        phone = ''.join(filter(str.isdigit, value))
+        print(f"Processed phone number: {phone}")
+
+        if 10 > len(phone) or len(phone) > 15:
+            raise ValidationError(message='Не правильный формат телефона')
+
+        return value
