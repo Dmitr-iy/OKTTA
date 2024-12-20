@@ -1,11 +1,13 @@
 import os
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 import qrcode
 import io
 import base64
 
+from common.permissions import IsUserNotManager
 from integrations_app.models import Integration
 from integrations_app.serializers import IntegrationsSerializer
 
@@ -28,6 +30,7 @@ def generate_qr_code(self, data, file_path=None):
 class IntegrationViewSet(viewsets.ModelViewSet):
     queryset = Integration.objects.all()
     serializer_class = IntegrationsSerializer
+    permission_classes = [IsAuthenticated | IsUserNotManager]
 
     def create(self, request, *args, **kwargs):
         """

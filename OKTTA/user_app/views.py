@@ -119,6 +119,7 @@ class ManagerViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
                      viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin):
     queryset = Manager.objects.all()
     serializer_class = ManagerSerializer
+    permission_classes = [IsAuthenticated | IsUserNotManager]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

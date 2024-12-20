@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from django.utils import timezone
 from datetime import timedelta
 
+from common.permissions import IsUserNotManager
 from .models import Plan
 from .serializers import UsersSerializer, PlanSerializer
 
@@ -20,7 +21,7 @@ User = get_user_model()
 class PlansViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Plan.objects.all()
     serializer_class = PlanSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated | IsUserNotManager]
 
 @extend_schema(
     tags=['plans'],
@@ -30,7 +31,7 @@ class PlansViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.Ge
 class PlansUsersViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UsersSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated | IsUserNotManager]
 
     @action(detail=True, methods=['patch'], url_path='purchase-plan')
     def purchase_plan(self, request, pk=None):

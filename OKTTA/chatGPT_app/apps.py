@@ -7,3 +7,4 @@ class ChatgptAppConfig(AppConfig):
 
     def ready(self):
         import chatGPT_app.schema
+        import chatGPT_app.signals

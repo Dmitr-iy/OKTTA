@@ -11,7 +11,13 @@ class GptSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
-        return super().create(validated_data)
+        text = self.context['request'].data.get('text')
+        tokens_purchased = self.context['request'].user.tokens_purchased
+        if len(text) / 2 <= tokens_purchased:
+            print(';;', len(text))
+            return super().create(validated_data)
+
+        raise serializers.ValidationError("Недостаточно токенов.")
 
     def validate(self, data):
         if 'instruction_file' not in self.context.get('request').data:
@@ -35,7 +41,20 @@ class FileGptSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
-        return super().create(validated_data)
+        tokens_purchased = self.context['request'].user.tokens_purchased
+        instruction_file = validated_data.get('instruction_file')
+
+        if instruction_file:
+            with instruction_file.open('r', encoding='utf-8') as file:
+                file_content = file.read()
+                file_length = len(file_content)
+
+            if file_length / 2 <= tokens_purchased:
+                return super().create(validated_data)
+            else:
+                raise serializers.ValidationError("Недостаточно токенов.")
+        else:
+            raise serializers.ValidationError("Файл не был загружен.")
 
     def validate(self, data):
         if 'instruction_file' not in data:

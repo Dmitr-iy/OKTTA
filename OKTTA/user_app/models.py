@@ -37,7 +37,7 @@ class User (AbstractBaseUser, PermissionsMixin):
 
     # @property
     # def total_tokens(self):
-    #     return self.plan.tokens + self.tokens_purchased  # Общее количество токенов
+    #     return self.plan.tokens + self.tokens_purchased
 
     def chat_message_count(self):
         return Message.objects.filter(chat__user=self).count()

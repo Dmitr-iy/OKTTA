@@ -16,6 +16,7 @@ class ChatViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
                   viewsets.GenericViewSet):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         if self.action == 'my_chats':

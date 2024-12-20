@@ -6,12 +6,13 @@ from rest_framework.response import Response
 
 from chatGPT_app.models import ChatGPT
 from chatGPT_app.serializers import GptSerializer, FileGptSerializer
+from common.permissions import IsUserNotManager
 
 
 class GptViewSet(viewsets.ModelViewSet):
     queryset = ChatGPT.objects.all()
     serializer_class = GptSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated | IsUserNotManager]
 
     @action(detail=False, methods=['post'], url_name='file_upload')
     def file_upload(self, request):
