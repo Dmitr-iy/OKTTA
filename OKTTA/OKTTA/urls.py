@@ -11,6 +11,7 @@ from integrations_app.urls import router as integrations_approuter
 from user_app.urls import router as users_approuter
 from chat_app.urls import router as chat_approuter
 from tariff_app.urls import router as tariff_approuter
+from chatGPT_app.urls import router as chatGPT_approuter
 from settings_app.views import WidgetView
 
 router = routers.DefaultRouter()
@@ -18,6 +19,7 @@ router.registry.extend(integrations_approuter.registry)
 router.registry.extend(users_approuter.registry)
 router.registry.extend(chat_approuter.registry)
 router.registry.extend(tariff_approuter.registry)
+router.registry.extend(chatGPT_approuter.registry)
 
 
 urlpatterns = [
