@@ -56,7 +56,7 @@ def webhook(request, id_integration):
                 nickname=nickname,
                 chat=chat,
                 messages=message_text,
-                sender_type=user_id,
+                sender_type='client',
             )
             logger.info(f'Message created: {message_text}')
 

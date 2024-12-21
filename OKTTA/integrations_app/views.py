@@ -23,7 +23,7 @@ def generate_qr_code(self, data, file_path=None):
 
     buffered = io.BytesIO()
     qr.save(buffered, format="PNG")
-    qr_code_image = base64.b64encode(buffered.getvalue()).decode()  # Кодируем в base64
+    qr_code_image = base64.b64encode(buffered.getvalue()).decode()
     return f"data:image/png;base64,{qr_code_image}"
 
 

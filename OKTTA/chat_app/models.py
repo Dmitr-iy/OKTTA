@@ -8,7 +8,7 @@ class Chat(models.Model):
     integration = models.ForeignKey('integrations_app.Integration', null=True, blank=True, on_delete=models.SET_NULL, related_name='chats')
     manager = models.ForeignKey('user_app.Manager', null=True, blank=True, on_delete=models.SET_NULL, related_name='chat_managers')
     user = models.ForeignKey('user_app.User', on_delete=models.CASCADE, null=True, blank=True, related_name='chats')
-    messanger_chat_id = models.CharField(max_length=255, null=True, blank=True, unique=True)
+    messanger_chat_id = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f'{self.pk}'
@@ -30,7 +30,7 @@ class Message(models.Model):
     CHOICES = (
         ('gpt', 'gpt'),
         ('manager', 'manager'),
-        ('user', 'user'),
+        ('client', 'client'),
         ('admin', 'admin'),
     )
     nickname = models.CharField(max_length=255)

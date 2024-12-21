@@ -2,8 +2,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 
-from chat_app.models import Message
 from user_app.managers import UserManager
+from user_app.methods import messages_to_day, messages_last_week, messages_last_month
 
 
 class User (AbstractBaseUser, PermissionsMixin):
@@ -63,6 +63,27 @@ class User (AbstractBaseUser, PermissionsMixin):
         Возвращает количество чатов пользователя.
         """
         return self.chats.count()
+
+    def messages_to_day_clients(self):
+        """
+        Возвращает количество сообщений от sender_type='client' за сегодня
+        """
+        result = messages_to_day(self)
+        return result
+
+    def messages_last_week_clients(self):
+        """
+        Возвращает количество сообщений от sender_type='client' за последнюю неделю
+        """
+        result = messages_last_week(self)
+        return result
+
+    def messages_last_month_clients(self):
+        """
+        Возвращает количество сообщений от sender_type='client' за последнюю месяц
+        """
+        result = messages_last_month(self)
+        return result
 
 
 class Manager(models.Model):

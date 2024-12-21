@@ -12,14 +12,14 @@ def message_count():
         count = chat.message_count()
         cache.set(f'message_count_{chat.id}', count, timeout=60)
 
-def messages_unread_count():
+def unread_count():
     """
     Обновление количества непрочитанных сообщений в чатах. Запись в кэш
     """
     chats = Chat.objects.all()
     for chat in chats:
-        count = chat.messages_unread_count()
-        cache.set(f'messages_unread_count_{chat.id}', count, timeout=60)
+        count = chat.messages_unread()
+        cache.set(f'unread_count_{chat.id}', count, timeout=60)
 
 
 def start_scheduler():
