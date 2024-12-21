@@ -61,7 +61,7 @@ class ChatViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
         user = request.user
         user_id = user.id
         chat = self.get_object()
-        messages_unread = cache.get(f'message_count_{chat.id}')
+        messages_unread = cache.get(f'unread_count_{chat.id}')
         serializer = self.get_serializer(chat)
         chat_data = serializer.data
 
@@ -95,7 +95,7 @@ class MessageViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Retr
             sender_type = 'manager'
             nickname = user.managers.first().email
         else:
-            sender_type = 'user'
+            sender_type = 'client'
             nickname = user.email
 
         serializer = self.get_serializer(data=request.data)

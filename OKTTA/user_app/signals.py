@@ -4,7 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from .models import Manager
-from .views import generate_token
+from .methods import generate_token
 
 
 @receiver(post_save, sender=Manager)

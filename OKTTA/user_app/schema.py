@@ -109,6 +109,54 @@ class Fix1(OpenApiViewExtension):
             def statistics(self, request, *args, **kwargs):
                 return super().statistics(request, *args, **kwargs)
 
+            @extend_schema(
+                summary='Получить статистику обращений клиента за текущий день',
+                description='Получить статистику обращений клиента за текущий день',
+                examples=[
+                    OpenApiExample(
+                        'Пример ответа',
+                        value={
+                                "messages_today": 11
+                        },
+                    ),
+                ],
+                tags=['statistics'],
+            )
+            def to_day_mes_client(self, request, *args, **kwargs):
+                return super().to_day_mes_client(request, *args, **kwargs)
+
+            @extend_schema(
+                summary='Получить статистику обращений клиента за текущий неделй',
+                description='Получить статистику обращений клиента за неделю',
+                examples=[
+                    OpenApiExample(
+                        'Пример ответа',
+                        value={
+                                "messages_last_week": 11
+                        },
+                    ),
+                ],
+                tags=['statistics'],
+            )
+            def last_week_mes_client(self, request, *args, **kwargs):
+                return super().last_week_mes_client(request, *args, **kwargs)
+
+            @extend_schema(
+                summary='Получить статистику обращений клиента за текущий месяц',
+                description='Получить статистику обращений клиента за месяц',
+                examples=[
+                    OpenApiExample(
+                        'Пример ответа',
+                        value={
+                                "messages_last_month": 11
+                        },
+                    ),
+                ],
+                tags=['statistics'],
+            )
+            def last_month_mes_client(self, request, *args, **kwargs):
+                return super().last_month_mes_client(request, *args, **kwargs)
+
         return Fixed
 
 

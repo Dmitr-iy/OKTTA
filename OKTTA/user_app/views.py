@@ -1,7 +1,3 @@
-from django.core import signing
-from django.core.exceptions import SuspiciousOperation
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from django.contrib.auth import get_user_model
@@ -11,6 +7,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import viewsets, mixins
 from django.core.cache import cache
+from django.core.exceptions import SuspiciousOperation
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.core import signing
 
 from common.permissions import IsUserNotManager
 from integrations_app.models import Integration
@@ -120,6 +120,49 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.Gen
         }
         return Response(response_data)
 
+    @action(detail=True, methods=['get'], url_name='to_day_mes_client')
+    def to_day_mes_client(self, request, pk=None):
+        """
+        Эндпоинт для получения обращений от клиентов в чате за текущий день.
+        """
+        user = self.get_object()
+        count = cache.get(f'messages_to_day_{user.id}')
+
+        if count is None:
+            count = user.messages_to_day_clients()
+            cache.set(f'messages_to_day_{user.id}', count, timeout=60)
+
+        return Response({"messages_today": count})
+
+    @action(detail=True, methods=['get'], url_name='last_week_mes_client')
+    def last_week_mes_client(self, request, pk=None):
+        """
+        Эндпоинт для получения обращений от клиентов в чате за последнюю неделю.
+        """
+        user = self.get_object()
+        count = cache.get(f'messages_last_week_{user.id}')
+
+        if count is None:
+            count = user.messages_last_week_clients()
+            cache.set(f'messages_last_week_{user.id}', count, timeout=60)
+
+        return Response({"messages_last_week": count})
+
+    @action(detail=True, methods=['get'], url_name='last_month_mes_client')
+    def last_month_mes_client(self, request, pk=None):
+        """
+        Эндпоинт для получения обращений от клиентов в чате за последний месяц.
+        """
+        user = self.get_object()
+        count = cache.get(f'messages_last_month_{user.id}')
+
+        if count is None:
+            count = user.messages_last_month_clients()
+            cache.set(f'messages_last_month_{user.id}', count, timeout=60)
+
+        return Response({"messages_last_month": count})
+
+
 # создание, удаление, получение менеджера
 class ManagerViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
                      viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin):
@@ -135,14 +178,6 @@ class ManagerViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
         serializer.is_valid(raise_exception=True)
         manager = serializer.save()
         return Response(self.get_serializer(manager).data, status=status.HTTP_201_CREATED)
-
-
-def generate_token(manager):
-    """
-    Генерирует токен для подтверждения почты менеджера
-    """
-    print(manager.id)
-    return signing.dumps(manager.id)
 
 
 def confirm_email(request, token):
