@@ -9,6 +9,7 @@ from chatGPT_app.serializers import GptSerializer, FileGptSerializer
 from common.permissions import IsUserNotManager
 
 
+# Представление для работы с моделью ChatGPT.
 class GptViewSet(viewsets.ModelViewSet):
     queryset = ChatGPT.objects.all()
     serializer_class = GptSerializer
@@ -16,6 +17,9 @@ class GptViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], url_name='file_upload')
     def file_upload(self, request):
+        """
+        Загрузка файла
+        """
         request.validated_data['user'] = request.user
         serializer_class = FileGptSerializer
         serializer_class = serializer_class(data=request.data)

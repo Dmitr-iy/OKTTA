@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 import logging
 from django.core.cache import cache
+from yaml import serialize
 
 from chat_app.models import Chat, Message
 from chat_app.serializers import ChatSerializer, MessageSerializer
@@ -54,6 +55,26 @@ class ChatViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
             chat_statistics.append(chat_data)
 
         return Response(chat_statistics, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['get'], url_path='mark-as-unread')
+    def mark_as_unread(self, request, pk=None):
+        user = request.user
+        user_id = user.id
+        chat = self.get_object()
+        messages_unread = cache.get(f'message_count_{chat.id}')
+        serializer = self.get_serializer(chat)
+        chat_data = serializer.data
+
+        response_data = {
+            'user_id': user_id,
+            'chat_info': {
+                'id': chat_data['id'],
+                'name': chat_data['name']
+            },
+            'messages_unread': messages_unread
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
 class MessageViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin,

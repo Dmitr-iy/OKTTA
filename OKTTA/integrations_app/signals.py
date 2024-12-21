@@ -11,6 +11,9 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=Integration)
 def create_chat(sender, instance, created, **kwargs):
+    """
+    Функция для создания чата при сохранении интеграции.
+    """
     if created:
         token = instance.api_key
         webhook_url = settings.WEBHOOK_URL

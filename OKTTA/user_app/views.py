@@ -20,7 +20,7 @@ from .serializers import RegistrationSerializer, MyTokenObtainPairSerializer, Us
 
 User = get_user_model()
 
-
+# Регистрация
 class RegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
@@ -40,7 +40,7 @@ class RegistrationView(generics.CreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-
+# Токен для авторизации
 class CustomTokenObtainPairView(APIView):
     serializer_class = MyTokenObtainPairSerializer
 
@@ -49,7 +49,7 @@ class CustomTokenObtainPairView(APIView):
         serializer.is_valid(raise_exception=True)
         return Response(serializer.create(serializer.validated_data))
 
-
+# Пользователь
 class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet, mixins.UpdateModelMixin):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -80,12 +80,18 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.Gen
 
     @action(detail=False, methods=['get'], url_name='my_integrations')
     def my_integrations(self, request):
+        """
+        Получение интеграций пользователя
+        """
         integrations = self.get_queryset()
         serializer = IntegrationsSerializer(integrations, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_name='my_managers')
     def my_managers(self, request):
+        """
+        Получение менеджеров пользователя
+        """
         managers = self.get_queryset()
         filtered_managers = self.filter_queryset(managers)
         serializer = ManagerSerializer(filtered_managers, many=True)
@@ -93,13 +99,13 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.Gen
 
     @action(detail=True, methods=['get'], url_name='statistics_user')
     def statistics(self, request, pk=None):
+        """
+        Эндпоинт для получения статистики пользователя.
+        """
         try:
             user = User.objects.get(pk=pk)
         except User.DoesNotExist:
             return Response({"error": "User  not found."}, status=404)
-
-        if request.user != user and not request.user.is_staff:
-            return Response({"error": "You do not have permission to access this user's statistics."}, status=403)
 
         user_data = self.serializer_class(user).data
         chat_message_count = cache.get(f'chat_message_count_{user.id}')
@@ -114,7 +120,7 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.Gen
         }
         return Response(response_data)
 
-
+# создание, удаление, получение менеджера
 class ManagerViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
                      viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin):
     queryset = Manager.objects.all()
@@ -122,6 +128,9 @@ class ManagerViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
     permission_classes = [IsAuthenticated | IsUserNotManager]
 
     def create(self, request, *args, **kwargs):
+        """
+        Создает менеджера
+        """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         manager = serializer.save()
@@ -129,11 +138,17 @@ class ManagerViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
 
 
 def generate_token(manager):
+    """
+    Генерирует токен для подтверждения почты менеджера
+    """
     print(manager.id)
     return signing.dumps(manager.id)
 
 
 def confirm_email(request, token):
+    """
+    Подтверждает почту менеджера
+    """
     try:
         manager_id = signing.loads(token)
         manager = get_object_or_404(Manager, id=manager_id)

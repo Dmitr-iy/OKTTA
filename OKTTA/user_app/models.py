@@ -31,6 +31,9 @@ class User (AbstractBaseUser, PermissionsMixin):
 
     @property
     def is_plan_active(self):
+        """
+        Проверяет, активен ли план пользователя.
+        """
         if self.plan_end_date and timezone.now() < self.plan_end_date:
             return True
         return False
@@ -40,9 +43,25 @@ class User (AbstractBaseUser, PermissionsMixin):
     #     return self.plan.tokens + self.tokens_purchased
 
     def chat_message_count(self):
-        return Message.objects.filter(chat__user=self).count()
+        """
+        Возвращает количество сообщений в чатах пользователя.
+        """
+        chats = self.chats.all()
+        chat_counts = []
+
+        for chat in chats:
+            message_count = chat.messages.count()
+            chat_counts.append({
+                'chat_id': chat.id,
+                'message_count': message_count
+            })
+
+        return chat_counts
 
     def chat_count(self):
+        """
+        Возвращает количество чатов пользователя.
+        """
         return self.chats.count()
 
 

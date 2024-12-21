@@ -9,6 +9,9 @@ from .views import generate_token
 
 @receiver(post_save, sender=Manager)
 def send_confirmation_email(sender, instance, created, **kwargs):
+    """
+    Отправляет письмо с подтверждением email
+    """
     if created:
         token = generate_token(instance)
         subject = 'Подтвердите email'

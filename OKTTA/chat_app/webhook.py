@@ -15,6 +15,9 @@ logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def webhook(request, id_integration):
+    """
+    Обработчик вебхука
+    """
     logger.info('Webhook called')
     if request.method == 'POST':
         update = json.loads(request.body)
@@ -78,6 +81,9 @@ def webhook(request, id_integration):
 
 
 def respond_to_gpt(response_text, chat):
+    """
+    Ответ на GPT
+    """
     chatGpt = ChatGPT.objects.first()
 
     if chatGpt:
@@ -96,6 +102,9 @@ def respond_to_gpt(response_text, chat):
 
 
 def send_message(chat_id, text, api_key):
+    """
+    Отправка сообщения в Telegram
+    """
     url = f'{settings.TELEGRAM_URL}{api_key}/sendMessage'
     payload = {
         'chat_id': chat_id,
