@@ -1,5 +1,5 @@
 from drf_spectacular.extensions import OpenApiViewExtension
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 
 import integrations_app.views
 import user_app.views
@@ -82,7 +82,28 @@ class Fix1(OpenApiViewExtension):
 
             @extend_schema(
                 summary='Статистика сообщений и количества чатов пользователя',
-                description='Статистика сообщений и количества чатов пользователя',
+                description='Статистика сообщений и количества чатов пользователя. \n\n'
+                            'Принимает id пользователя. \n\n Возвращает: данные пользователя,'
+                            ' список чатов с их id и количеством сообщений, \n\n'
+                            'количество чатов пользователя.',
+                examples=[
+                    OpenApiExample(
+                        'Пример ответа',
+                        value={
+                            "user_data": {"data user"},
+                            "chat_message_count": [{
+                                "chat_id": 1,
+                                "message_count": 8
+                                },
+                                {
+                                  "chat_id": 2,
+                                  "message_count": 4
+                                }
+                              ],
+                            "chat_count": 2
+                        },
+                    ),
+                ],
                 tags=['statistics'],
             )
             def statistics(self, request, *args, **kwargs):

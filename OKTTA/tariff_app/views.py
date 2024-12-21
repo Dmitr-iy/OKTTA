@@ -35,6 +35,9 @@ class PlansUsersViewSet(viewsets.GenericViewSet):
 
     @action(detail=True, methods=['patch'], url_path='purchase-plan')
     def purchase_plan(self, request, pk=None):
+        """
+        Эндпоинт для приобретения тарифного плана.
+        """
         user = self.get_object()
         plan_id = request.data.get('plan')
 

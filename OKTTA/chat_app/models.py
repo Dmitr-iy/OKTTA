@@ -14,7 +14,16 @@ class Chat(models.Model):
         return f'{self.pk}'
 
     def message_count(self):
+        """
+        Возвращает количество сообщений в чате
+        """
         return self.messages.count()
+
+    def messages_unread(self):
+        """
+        Возвращает количество непрочитанных сообщений в чате
+        """
+        return self.messages.filter(is_read=False).count()
 
 
 class Message(models.Model):

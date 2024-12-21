@@ -1,7 +1,9 @@
 from drf_spectacular.extensions import OpenApiViewExtension
-from drf_spectacular.utils import extend_schema, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiParameter
 
 import chat_app.views
+import chat_app.serializers
 
 
 class Fix1(OpenApiViewExtension):
@@ -35,11 +37,42 @@ class Fix1(OpenApiViewExtension):
 
             @extend_schema(
                 summary='Статистика чатов',
-                description='Получение статистики чатов',
+                description='Получение количества сообщений в каждом чате. Принимает id владельца чата, '
+                            'возвращает список чатов с их id, названием и количеством сообщений',
+                examples=[
+                    OpenApiExample(
+                        'Пример ответа',
+                        value={
+                            'id': 1,
+                            'name': 'Telegram',
+                            'message_count': 5,
+                        },
+                    ),
+                ],
                 tags=['statistics'],
             )
             def statistics(self, request, *args, **kwargs):
                 return super().statistics(request, *args, **kwargs)
+
+            @extend_schema(
+                summary='Получить чат с количеством не прочитанных сообщений',
+                description='Получить чат с количеством не прочитанных сообщений. \n\n'
+                            'Принимает id чата. \n\n Возвращает: id владельца чата, '
+                            'список чатов с их id, названием и количеством не прочитанных сообщений',
+                examples=[
+                    OpenApiExample(
+                        'Пример ответа',
+                        value={
+                            'id': 1,
+                            'name': 'Telegram',
+                            'messages_unread': 5,
+                        },
+                    ),
+                ],
+                tags=['statistics'],
+            )
+            def mark_as_unread(self, request, *args, **kwargs):
+                return super().mark_as_unread(request, *args, **kwargs)
 
         return Fixed
 
