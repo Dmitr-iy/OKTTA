@@ -28,8 +28,8 @@ ______________________________
 После в терминале клонируете репозиторий и создаете сеть:
 
 ```
-git clone https://github.com/dariedu/darieduBackend.git
-cd darieduBackend
+https://github.com/Dmitr-iy/OKTTA.git
+cd OKTTA
 docker network create mynetwork
 ```
 
